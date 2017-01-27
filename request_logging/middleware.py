@@ -9,19 +9,11 @@ request_logger = logging.getLogger('django.request')
 class LoggingMiddleware(object):
 
     def process_request(self, request):
-        request_logger.info(colorize("{} {}".format(request.method, request.get_full_path()), fg="cyan"))
-        if (request.body):
-            self.log_body(self.chunked_to_max(request.body))
+        if (request.method == "POST"):
+            request_logger.info(colorize("{} {}".format(request.method, request.get_full_path()), fg="cyan"))
+            self.log_body(request.body)
 
     def process_response(self, request, response):
-        resp_log = "{} {} - {}".format(request.method, request.get_full_path(), response.status_code)
-        if (response.status_code in range(400, 600)):
-            request_logger.info(colorize(resp_log, fg="magenta"))
-            self.log_resp_body(response, level=logging.ERROR)
-        else:
-            request_logger.info(colorize(resp_log, fg="cyan"))
-            self.log_resp_body(response)
-
         return response
 
     def log_resp_body(self, response, level=logging.INFO):
