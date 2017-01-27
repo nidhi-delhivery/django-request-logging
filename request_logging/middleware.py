@@ -9,10 +9,10 @@ request_logger = logging.getLogger('django.request')
 class LoggingMiddleware(object):
 
     def process_request(self, request):
-        request_logger.info(colorize("{} {}".format(request.method, request.get_full_path()), fg="cyan"))
         if (request.body):
+            request_logger.info(colorize("{} {}".format(request.method, request.get_full_path()), fg="cyan"))
             self.log_body(self.chunked_to_max(request.body))
-
+                 
     def process_response(self, request, response):
         resp_log = "{} {} - {}".format(request.method, request.get_full_path(), response.status_code)
         if (response.status_code in range(400, 600)):
@@ -31,7 +31,7 @@ class LoggingMiddleware(object):
         self.log_body(self.chunked_to_max(response.content), level)
 
     def log_body(self, msg, level=logging.INFO):
-        request_logger.log(level, msg)
+        request_logger.log(level, "logs from middleware is {}".format(msg))
 
     def chunked_to_max(self, msg):
         if (len(msg) > MAX_BODY_LENGTH):
