@@ -24,16 +24,14 @@ class LoggingMiddleware(object):
 
         return response
 
-    def log_resp_body(self, response, level=logging.DEBUG):
+    def log_resp_body(self, response, level=logging.INFO):
         if (not re.match('^application/json', response.get('Content-Type', ''), re.I)):  # only log content type: 'application/xxx'
             return
 
         self.log_body(self.chunked_to_max(response.content), level)
 
-    def log_body(self, msg, level=logging.DEBUG):
-        for line in str(msg).split('\n'):
-            line = colorize(line, fg="magenta") if (level >= logging.ERROR) else colorize(line, fg="cyan")
-            request_logger.log(level, line)
+    def log_body(self, msg, level=logging.INFO):
+        request_logger.log(level, msg)
 
     def chunked_to_max(self, msg):
         if (len(msg) > MAX_BODY_LENGTH):
